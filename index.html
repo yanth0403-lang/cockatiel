@@ -3,1116 +3,1040 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>白面珍珠玄鳳互動養成 — Siri</title>
+  <title>白面珍珠玄鳳水彩養成家園 — Siri</title>
   <style>
     :root {
-      --bg-main: #f5f3ef;
-      --card-bg: #ffffff;
-      --text-main: #3d3b38;
-      --text-muted: #7d7a74;
-      --primary: #5c7c64;
-      --danger: #d9534f;
-      --warning: #f0ad4e;
-      --info: #5bc0de;
-      --accent: #d8c292;
+      --bg-wall: #f7f3ee;
+      --bg-floor: #d8c3a5;
+      --card-bg: rgba(255, 255, 255, 0.92);
+      --text-main: #4a443d;
+      --text-muted: #857e75;
+      --primary: #6b8c74;
+      --danger: #cf5b56;
+      --accent: #e8a87c;
+      --cage-metal: #8e9da2;
     }
 
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      font-family: "PingFang TC", "Microsoft JhengHei", sans-serif;
       user-select: none;
     }
 
     body {
-      background-color: var(--bg-main);
+      background: #ece5dc;
       color: var(--text-main);
       min-height: 100vh;
       display: flex;
       flex-direction: column;
       align-items: center;
-      padding: 20px 10px;
+      padding: 16px 10px;
     }
 
-    .container {
-      max-width: 900px;
+    .main-wrapper {
+      max-width: 960px;
       width: 100%;
       display: flex;
       flex-direction: column;
-      gap: 20px;
+      gap: 16px;
     }
 
+    /* 頂部資訊列 */
     header {
-      text-align: center;
       background: var(--card-bg);
-      padding: 16px;
-      border-radius: 16px;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-      position: relative;
-    }
-
-    .pet-name-wrap {
-      display: inline-flex;
+      backdrop-filter: blur(8px);
+      padding: 14px 20px;
+      border-radius: 18px;
+      display: flex;
+      justify-content: space-between;
       align-items: center;
-      gap: 8px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.04);
     }
 
-    .pet-name-wrap input {
-      font-size: 1.4rem;
+    .title-box {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .title-box input {
+      font-size: 1.3rem;
       font-weight: bold;
       border: 1px dashed transparent;
       padding: 2px 6px;
       border-radius: 6px;
       color: var(--text-main);
       background: transparent;
-      text-align: center;
-      width: 140px;
+      width: 130px;
     }
 
-    .pet-name-wrap input:hover, .pet-name-wrap input:focus {
+    .title-box input:focus {
       border-color: var(--primary);
-      background: #fafafa;
+      background: #fff;
       outline: none;
     }
 
-    /* 儀表狀態區 */
-    .status-panel {
+    .currency-badge {
+      background: #fff1d6;
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-weight: bold;
+      color: #b8741a;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    /* 狀態量表 */
+    .status-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
       gap: 12px;
       background: var(--card-bg);
-      padding: 16px;
-      border-radius: 16px;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+      padding: 14px 18px;
+      border-radius: 18px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.03);
     }
 
-    .status-item {
+    .status-col {
       display: flex;
       flex-direction: column;
-      gap: 6px;
+      gap: 5px;
     }
 
     .status-label {
+      font-size: 0.88rem;
+      font-weight: 600;
       display: flex;
       justify-content: space-between;
-      font-size: 0.9rem;
-      font-weight: bold;
+    }
+
+    .progress {
+      height: 12px;
+      background: #e9ecef;
+      border-radius: 6px;
+      overflow: hidden;
     }
 
     .progress-bar {
-      height: 14px;
-      background: #eee;
-      border-radius: 7px;
-      overflow: hidden;
-      position: relative;
-    }
-
-    .progress-fill {
       height: 100%;
-      width: 50%;
-      transition: width 0.3s ease, background-color 0.3s ease;
-      border-radius: 7px;
+      border-radius: 6px;
+      transition: width 0.3s ease;
     }
 
-    .fill-hunger { background: #ff9f43; }
-    .fill-happiness { background: #ee5253; }
-    .fill-bond { background: #10ac84; }
+    .bar-hunger { background: linear-gradient(90deg, #f7b731, #fa8231); }
+    .bar-happy { background: linear-gradient(90deg, #fd9644, #eb3b5a); }
+    .bar-bond { background: linear-gradient(90deg, #26de81, #20bf6b); }
 
-    /* 主要互動區 */
-    .stage-card {
-      background: var(--card-bg);
-      border-radius: 20px;
-      padding: 20px;
-      box-shadow: 0 6px 20px rgba(0,0,0,0.06);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
+    /* 居家主舞台 */
+    .home-room {
       position: relative;
+      width: 100%;
+      height: 480px;
+      border-radius: 24px;
       overflow: hidden;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+      border: 6px solid #fff;
+      /* 家居背景：上層米白牆面 + 窗戶光影，下層木質地板 */
+      background: linear-gradient(to bottom, var(--bg-wall) 0%, var(--bg-wall) 70%, var(--bg-floor) 70%, #c4ab89 100%);
     }
 
-    .stage-view {
-      width: 320px;
-      height: 340px;
-      position: relative;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
-
-    .cage-overlay {
+    /* 房間裝飾（窗戶、光影） */
+    .window {
       position: absolute;
-      top: 0; left: 0; width: 100%; height: 100%;
-      background: repeating-linear-gradient(90deg, rgba(160,160,160,0.4) 0px, rgba(160,160,160,0.4) 4px, transparent 4px, transparent 28px);
-      border: 4px solid #aaa;
-      border-radius: 14px;
-      pointer-events: none;
-      display: none;
-      z-index: 10;
+      top: 30px;
+      left: 40px;
+      width: 110px;
+      height: 150px;
+      background: #eaf6f6;
+      border: 6px solid #fff;
+      border-radius: 10px;
+      box-shadow: inset 0 0 15px rgba(255,255,255,0.8), 0 5px 15px rgba(0,0,0,0.03);
+    }
+    .window::after {
+      content: '';
+      position: absolute;
+      top: 0; left: 50%; width: 3px; height: 100%;
+      background: #fff;
+      transform: translateX(-50%);
+    }
+    .window::before {
+      content: '';
+      position: absolute;
+      top: 50%; left: 0; width: 100%; height: 3px;
+      background: #fff;
+      transform: translateY(-50%);
     }
 
-    .cage-overlay.in-cage {
+    /* 家具擺飾層 */
+    .furniture-item {
+      position: absolute;
+      pointer-events: none;
+      transition: all 0.4s ease;
+      display: none;
+    }
+    .furniture-item.unlocked {
       display: block;
     }
 
-    /* SVG 鳥本體與動畫 */
-    #cockatiel-svg {
+    #plantDeco { left: 165px; bottom: 120px; font-size: 48px; }
+    #perchDeco { left: 45%; bottom: 115px; font-size: 55px; }
+    #rugDeco { left: 35%; bottom: 40px; font-size: 75px; transform: scale(1.5, 0.7); }
+
+    /* 玄鳳籠（右側） */
+    .bird-cage {
+      position: absolute;
+      right: 35px;
+      bottom: 95px;
+      width: 160px;
+      height: 250px;
+      border: 4px solid var(--cage-metal);
+      border-radius: 40px 40px 10px 10px;
+      background: repeating-linear-gradient(90deg, transparent, transparent 18px, var(--cage-metal) 18px, var(--cage-metal) 21px);
+      box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+    .bird-cage:hover {
+      transform: scale(1.02);
+    }
+    .cage-perch {
+      position: absolute;
+      bottom: 60px;
+      left: 10%;
+      width: 80%;
+      height: 8px;
+      background: #b89569;
+      border-radius: 4px;
+    }
+    .cage-door-badge {
+      position: absolute;
+      top: -15px;
+      right: 20px;
+      background: #fff;
+      font-size: 0.75rem;
+      padding: 2px 8px;
+      border-radius: 10px;
+      border: 1px solid #ddd;
+    }
+
+    /* 玄鳳容器（支援拖曳） */
+    .cockatiel-actor {
+      position: absolute;
+      width: 140px;
+      height: 200px;
+      cursor: grab;
+      z-index: 10;
+      transition: transform 0.2s cubic-bezier(0.18, 0.89, 0.32, 1.28);
+    }
+
+    .cockatiel-actor:active {
+      cursor: grabbing;
+    }
+
+    .cockatiel-actor.in-cage {
+      left: auto !important;
+      right: 45px !important;
+      bottom: 125px !important;
+      transform: scale(0.85) !important;
+      opacity: 0.95;
+    }
+
+    /* 水彩質感濾鏡與動態 */
+    .watercolor-bird {
       width: 100%;
       height: 100%;
-      transition: transform 0.2s ease;
-      cursor: default;
+      filter: drop-shadow(0 6px 8px rgba(0,0,0,0.12));
     }
 
-    /* 點擊熱區 */
-    .hit-area {
-      cursor: pointer;
-      fill: transparent;
-      stroke: transparent;
-      transition: stroke 0.2s;
-    }
-
-    .debug-zones .hit-head { fill: rgba(46, 204, 113, 0.35); stroke: #2ecc71; }
-    .debug-zones .hit-wing { fill: rgba(231, 76, 60, 0.35); stroke: #e74c3c; }
-    .debug-zones .hit-tail { fill: rgba(231, 76, 60, 0.35); stroke: #e74c3c; }
-    .debug-zones .hit-body { fill: rgba(241, 196, 15, 0.35); stroke: #f1c40f; }
-
-    /* 動畫狀態類別 */
     .crest {
-      transform-origin: 155px 120px;
-      transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      transform-origin: 52px 65px;
+      transition: transform 0.35s ease;
     }
-    .crest-excited { transform: rotate(-22deg) scale(1.15); }
-    .crest-relaxed { transform: rotate(-5deg); }
-    .crest-scared  { transform: rotate(-35deg) scaleY(1.25) scaleX(0.9); }
-    .crest-angry   { transform: rotate(18deg) scaleY(0.85); }
+    .crest-relaxed { transform: rotate(0deg); }
+    .crest-excited { transform: rotate(-24deg) scale(1.1); }
+    .crest-scared  { transform: rotate(-38deg) scaleY(1.2); }
+    .crest-angry   { transform: rotate(20deg) scaleY(0.85); }
 
-    .eye {
-      transition: all 0.2s;
-    }
+    .shake-anim { animation: animJitter 0.35s infinite; }
+    .drag-struggle { animation: animStruggle 0.4s infinite alternate; }
 
-    .eye-closed {
-      transform: scaleY(0.1);
-      transform-origin: center;
-    }
-
-    .beak-open {
-      transform: translateY(3px) rotate(4deg);
-      transform-origin: 135px 150px;
-    }
-
-    .shake {
-      animation: animShake 0.4s ease-in-out;
-    }
-
-    .struggle {
-      animation: animStruggle 0.6s infinite alternate ease-in-out;
-    }
-
-    .turn-back {
-      transform: scaleX(-1);
-    }
-
-    @keyframes animShake {
-      0%, 100% { transform: translate(0, 0) rotate(0deg); }
-      20% { transform: translate(-8px, 4px) rotate(-4deg); }
-      40% { transform: translate(8px, -4px) rotate(4deg); }
-      60% { transform: translate(-5px, 2px) rotate(-2deg); }
-      80% { transform: translate(5px, -2px) rotate(2deg); }
+    @keyframes animJitter {
+      0% { transform: translate(1px, 1px) rotate(0deg); }
+      25% { transform: translate(-2px, -1px) rotate(-2deg); }
+      50% { transform: translate(-1px, 2px) rotate(1deg); }
+      75% { transform: translate(2px, 1px) rotate(2deg); }
+      100% { transform: translate(1px, -2px) rotate(-1deg); }
     }
 
     @keyframes animStruggle {
-      0% { transform: translate(-10px, -15px) rotate(-8deg); }
-      100% { transform: translate(10px, 15px) rotate(8deg); }
+      0% { transform: scale(1.05) rotate(-6deg); }
+      100% { transform: scale(1.05) rotate(6deg); }
     }
 
-    /* 氣泡與警告提示 */
-    .bubble {
+    /* 氣泡提示 */
+    .speech-bubble {
       position: absolute;
-      top: 15px;
       background: rgba(255, 255, 255, 0.95);
-      border: 1px solid #ddd;
-      padding: 8px 16px;
-      border-radius: 20px;
-      font-size: 0.95rem;
+      border-radius: 16px;
+      padding: 6px 14px;
+      font-size: 0.88rem;
       font-weight: bold;
       color: var(--text-main);
-      box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
       pointer-events: none;
       opacity: 0;
-      transform: translateY(5px);
-      transition: all 0.25s ease;
-      z-index: 20;
+      transform: translateY(10px);
+      transition: all 0.2s ease;
+      white-space: nowrap;
+      z-index: 25;
     }
-
-    .bubble.show {
+    .speech-bubble.active {
       opacity: 1;
       transform: translateY(0);
     }
 
-    /* 控制按鈕盤 */
-    .controls-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+    /* 操作盤 */
+    .action-panel {
+      display: flex;
+      flex-wrap: wrap;
       gap: 10px;
-      width: 100%;
-      margin-top: 16px;
     }
 
     .btn {
+      flex: 1;
+      min-width: 140px;
       padding: 10px 14px;
       border: none;
       border-radius: 12px;
-      font-size: 0.95rem;
+      background: var(--card-bg);
+      color: var(--text-main);
+      font-size: 0.92rem;
       font-weight: 600;
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
       gap: 6px;
+      box-shadow: 0 3px 8px rgba(0,0,0,0.04);
       transition: all 0.2s;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
     }
 
-    .btn:hover {
+    .btn:hover:not(:disabled) {
       transform: translateY(-2px);
-      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      box-shadow: 0 6px 12px rgba(0,0,0,0.08);
+      background: #fff;
     }
 
-    .btn:active {
-      transform: translateY(0);
+    .btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
     }
 
-    .btn-feed { background: #ffeaa7; color: #d35400; }
-    .btn-whistle { background: #dff9fb; color: #0984e3; }
-    .btn-cage { background: #f1f2f6; color: #2f3542; }
-    .btn-hand { background: #fab1a0; color: #b71540; }
-    .btn-clap { background: #ffbe76; color: #c0392b; }
-
-    /* 圖鑑與科普區 */
-    .tabs {
-      display: flex;
-      gap: 8px;
-      margin-top: 10px;
-      border-bottom: 2px solid #ddd;
-      padding-bottom: 6px;
+    /* 家具商店與圖鑑區 */
+    .bottom-section {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
     }
 
-    .tab-btn {
-      padding: 8px 16px;
-      background: transparent;
-      border: none;
-      font-size: 1rem;
-      font-weight: bold;
-      color: var(--text-muted);
-      cursor: pointer;
-      border-radius: 8px;
+    @media (max-width: 768px) {
+      .bottom-section { grid-template-columns: 1fr; }
     }
 
-    .tab-btn.active {
-      color: var(--primary);
-      background: rgba(92, 124, 100, 0.12);
-    }
-
-    .tab-content {
+    .card {
       background: var(--card-bg);
-      border-radius: 16px;
-      padding: 20px;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-      margin-top: 12px;
-      line-height: 1.6;
+      border-radius: 18px;
+      padding: 16px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.03);
     }
 
-    .zone-legend {
-      display: flex;
-      gap: 15px;
-      margin-bottom: 15px;
-      font-size: 0.9rem;
-    }
-
-    .legend-item {
+    .card h3 {
+      font-size: 1.05rem;
+      margin-bottom: 12px;
       display: flex;
       align-items: center;
       gap: 6px;
     }
 
-    .badge-color {
-      width: 14px;
-      height: 14px;
-      border-radius: 4px;
+    .shop-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
     }
 
-    .badge-green { background: #2ecc71; }
-    .badge-red { background: #e74c3c; }
-    .badge-yellow { background: #f1c40f; }
-
-    .food-tag-safe {
-      color: #27ae60;
-      font-weight: bold;
-    }
-    .food-tag-danger {
-      color: #c0392b;
-      font-weight: bold;
+    .shop-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #faf8f5;
+      padding: 10px 12px;
+      border-radius: 12px;
     }
 
-    /* 歷史記錄小窗 */
-    .log-box {
-      margin-top: 10px;
-      max-height: 100px;
-      overflow-y: auto;
-      font-size: 0.82rem;
-      color: var(--text-muted);
-      border-top: 1px solid #eee;
-      padding-top: 8px;
-    }
-
-    .toggle-debug-btn {
-      background: transparent;
-      border: 1px solid #ddd;
-      padding: 4px 8px;
-      font-size: 0.8rem;
-      border-radius: 6px;
+    .shop-btn {
+      padding: 5px 12px;
+      border-radius: 8px;
+      border: none;
+      background: var(--primary);
+      color: white;
+      font-size: 0.85rem;
       cursor: pointer;
-      color: var(--text-muted);
-      margin-top: 8px;
+      font-weight: bold;
+    }
+
+    .shop-btn:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+    }
+
+    .limit-badge {
+      font-size: 0.75rem;
+      color: var(--danger);
+      margin-left: 4px;
+    }
+
+    /* 點擊熱區 */
+    .touch-zone {
+      cursor: pointer;
+      fill: transparent;
     }
   </style>
 </head>
 <body>
 
-<div class="container">
+<div class="main-wrapper">
+  <!-- 頂部列 -->
   <header>
-    <div class="pet-name-wrap">
-      <span>🐦</span>
-      <input type="text" id="petNameInput" value="Siri" title="點擊可修改名字">
-      <span style="font-size: 0.9rem; color: var(--text-muted);">(白面珍珠玄鳳)</span>
+    <div class="title-box">
+      <span>🏡</span>
+      <input type="text" id="birdNameInput" value="Siri">
+      <span style="font-size: 0.85rem; color: var(--text-muted);">(白面珍珠)</span>
     </div>
-    <div id="statusMessage" style="font-size: 0.88rem; color: var(--text-muted); margin-top: 6px;">
-      悠閒理羽中...
+    <div class="currency-badge">
+      <span>💖 愛心親密幣:</span>
+      <span id="heartCoinDisplay">50</span>
     </div>
   </header>
 
-  <!-- 狀態指數條 -->
-  <div class="status-panel">
-    <div class="status-item">
+  <!-- 狀態條 -->
+  <div class="status-grid">
+    <div class="status-col">
       <div class="status-label">
         <span>飽食度 (Hunger)</span>
-        <span id="hungerText">80%</span>
+        <span id="hungerLabel">80%</span>
       </div>
-      <div class="progress-bar">
-        <div id="hungerBar" class="progress-fill fill-hunger" style="width: 80%;"></div>
-      </div>
+      <div class="progress"><div id="hungerBar" class="progress-bar bar-hunger" style="width: 80%;"></div></div>
     </div>
-    <div class="status-item">
+    <div class="status-col">
       <div class="status-label">
         <span>心情值 (Happiness)</span>
-        <span id="happinessText">85%</span>
+        <span id="happyLabel">85%</span>
       </div>
-      <div class="progress-bar">
-        <div id="happinessBar" class="progress-fill fill-happiness" style="width: 85%;"></div>
-      </div>
+      <div class="progress"><div id="happyBar" class="progress-bar bar-happy" style="width: 85%;"></div></div>
     </div>
-    <div class="status-item">
+    <div class="status-col">
       <div class="status-label">
-        <span>親密度 (Bond Lv.<span id="bondLevel">1</span>)</span>
-        <span id="bondText">50/100</span>
+        <span>親密度 (Bond Lv.<span id="bondLevelText">1</span>)</span>
+        <span id="bondLabel">50/100</span>
       </div>
-      <div class="progress-bar">
-        <div id="bondBar" class="progress-fill fill-bond" style="width: 50%;"></div>
-      </div>
+      <div class="progress"><div id="bondBar" class="progress-bar bar-bond" style="width: 50%;"></div></div>
     </div>
   </div>
 
-  <!-- 舞台與鳥主體 -->
-  <div class="stage-card">
-    <div class="bubble" id="reactionBubble">啾！❤️</div>
-    
-    <div class="stage-view">
-      <div class="cage-overlay" id="cageOverlay"></div>
-      
-      <!-- 向量白面珍珠玄鳳 SVG -->
-      <svg id="cockatiel-svg" viewBox="0 0 300 320" xmlns="http://www.w3.org/2000/svg">
+  <!-- 居家客廳主舞台 -->
+  <div class="home-room" id="homeRoom">
+    <div class="window"></div>
+
+    <!-- 解鎖家具擺飾 -->
+    <div class="furniture-item" id="plantDeco">🪴</div>
+    <div class="furniture-item" id="perchDeco">🪵</div>
+    <div class="furniture-item" id="rugDeco">🧶</div>
+
+    <!-- 右側鳥籠 -->
+    <div class="bird-cage" id="birdCage" title="點擊呼喚玄鳳出籠/進籠">
+      <div class="cage-door-badge" id="cageStatusText">隨機休息中</div>
+      <div class="cage-perch"></div>
+    </div>
+
+    <!-- 說話氣泡 -->
+    <div class="speech-bubble" id="birdSpeech">啾！❤️</div>
+
+    <!-- 玄鳳主角（支援拖曳移動） -->
+    <div class="cockatiel-actor" id="birdActor" style="left: 260px; bottom: 120px;">
+      <!-- 水彩手繪風格 SVG -->
+      <svg class="watercolor-bird" viewBox="0 0 160 220" xmlns="http://www.w3.org/2000/svg">
         <defs>
-          <!-- 珍珠斑紋 pattern -->
-          <pattern id="pearlPattern" width="16" height="16" patternUnits="userSpaceOnUse">
-            <ellipse cx="6" cy="6" rx="3" ry="4.5" fill="#f8f9fa" transform="rotate(-15 6 6)" />
-            <ellipse cx="13" cy="13" rx="2.5" ry="3.5" fill="#f1f2f6" transform="rotate(10 13 13)" />
+          <!-- 水彩斑點濾鏡模擬手繪紋理 -->
+          <filter id="watercolorPaper" x="0%" y="0%" width="100%" height="100%">
+            <feTurbulence type="fractalNoise" baseFrequency="0.04" numOctaves="3" result="noise" />
+            <feDisplacementMap in="SourceGraphic" in2="noise" scale="2" xChannelSelector="R" yChannelSelector="G" />
+          </filter>
+
+          <!-- 翅膀珍珠斑紋水彩漸層 -->
+          <linearGradient id="pearlWing" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#80888c"/>
+            <stop offset="35%" stop-color="#9ea7ab"/>
+            <stop offset="70%" stop-color="#d4d8db"/>
+            <stop offset="100%" stop-color="#6e767a"/>
+          </linearGradient>
+
+          <pattern id="pearlDots" width="14" height="14" patternUnits="userSpaceOnUse">
+            <ellipse cx="6" cy="6" rx="2.5" ry="4" fill="#ffffff" opacity="0.85" transform="rotate(-15 6 6)"/>
+            <ellipse cx="12" cy="12" rx="2" ry="3" fill="#f0f3f4" opacity="0.7" transform="rotate(10 12 12)"/>
           </pattern>
         </defs>
 
-        <!-- 站棍 Perch -->
-        <path d="M 30 270 Q 150 280 270 270" stroke="#b08d57" stroke-width="12" stroke-linecap="round" fill="none"/>
+        <g filter="url(#watercolorPaper)">
+          <!-- 站立腳爪爪 (淡粉灰色) -->
+          <ellipse cx="68" cy="192" rx="7" ry="4" fill="#cfb7a5" />
+          <ellipse cx="88" cy="192" rx="7" ry="4" fill="#cfb7a5" />
 
-        <!-- 鳥爪 Feet -->
-        <g fill="#c8a882">
-          <ellipse cx="140" cy="265" rx="8" ry="4"/>
-          <ellipse cx="160" cy="265" rx="8" ry="4"/>
-        </g>
+          <!-- 長尾羽 (深水墨灰) -->
+          <g id="tailLayer">
+            <path d="M 68 160 L 85 218 L 62 215 Z" fill="#5a6266" />
+            <path d="M 72 160 L 80 216 L 90 212 Z" fill="#464d50" />
+            <path class="touch-zone" id="touchTail" d="M 55 160 L 95 160 L 90 220 L 55 220 Z" />
+          </g>
 
-        <!-- 長尾羽 Tail -->
-        <g id="tailGroup">
-          <path d="M 145 220 L 165 310 L 140 310 Z" fill="#636e72" />
-          <path d="M 135 230 L 150 305 L 128 300 Z" fill="#4b555a" />
-          <!-- 摸尾巴熱區 -->
-          <path class="hit-area hit-tail" id="hitTail" d="M 125 220 L 175 220 L 170 315 L 120 315 Z" />
-        </g>
+          <!-- 腹部圓潤身軀 (水彩灰白漸層) -->
+          <ellipse cx="78" cy="140" rx="36" ry="48" fill="#8c969b" />
+          <path d="M 52 145 Q 75 185 102 145 Z" fill="#e8ecef" opacity="0.65" />
 
-        <!-- 軀幹 Body -->
-        <ellipse cx="150" cy="205" rx="42" ry="58" fill="#7f8c8d" />
+          <!-- 水彩手繪珍珠翅膀 -->
+          <g id="wingLayer">
+            <path d="M 52 115 Q 36 150 54 180 Q 94 170 98 125 Z" fill="url(#pearlWing)" />
+            <path d="M 52 115 Q 36 150 54 180 Q 94 170 98 125 Z" fill="url(#pearlDots)" />
+            <!-- 摸翅膀禁區 -->
+            <path class="touch-zone" id="touchWing" d="M 40 115 Q 30 150 54 185 Q 98 175 102 120 Z" />
+          </g>
 
-        <!-- 翅膀 Wing（珍珠斑紋灰白底） -->
-        <g id="wingGroup">
-          <!-- 翅膀底色 -->
-          <path d="M 120 170 Q 105 210 125 250 Q 165 240 175 185 Z" fill="#636e72" />
-          <!-- 珍珠羽斑紋層 -->
-          <path d="M 120 170 Q 105 210 125 250 Q 165 240 175 185 Z" fill="url(#pearlPattern)" />
-          <!-- 摸翅膀熱區 -->
-          <path class="hit-area hit-wing" id="hitWing" d="M 105 170 Q 95 210 125 255 Q 175 245 180 180 Z" />
-        </g>
-
-        <!-- 腹部肚羽胸毛 -->
-        <path d="M 140 175 Q 170 200 165 245 Q 140 255 135 220 Z" fill="#95a5a6" opacity="0.6" />
-
-        <!-- 抓住身體熱區 -->
-        <circle class="hit-area hit-body" id="hitBody" cx="150" cy="200" r="35" />
-
-        <!-- 頭部 Head (白面白色特徵) -->
-        <g id="headGroup">
-          <!-- 羽冠 Crest (四段動態) -->
+          <!-- 水彩手繪羽冠 Crest (四段動態) -->
           <g id="crestGroup" class="crest crest-relaxed">
-            <!-- 數根優美細長的白色/淡灰頭冠羽 -->
-            <path d="M 152 125 Q 175 75 195 50 Q 185 75 160 125 Z" fill="#f5f6fa" stroke="#dcdde1" stroke-width="1"/>
-            <path d="M 148 125 Q 160 65 175 40 Q 165 70 152 125 Z" fill="#ffffff" />
-            <path d="M 144 127 Q 150 75 158 55 Q 150 85 146 128 Z" fill="#f5f6fa" />
+            <path d="M 74 72 Q 88 28 108 12 Q 95 35 78 74 Z" fill="#fcfcfc" stroke="#cfd6d9" stroke-width="1.2"/>
+            <path d="M 70 73 Q 78 30 92 18 Q 84 42 74 75 Z" fill="#ffffff"/>
+            <path d="M 66 75 Q 70 42 78 30 Q 74 52 69 76 Z" fill="#eaeef0"/>
           </g>
 
-          <!-- 圓圓大頭 (白面臉蛋) -->
-          <circle cx="150" cy="140" r="34" fill="#ffffff" stroke="#f1f2f6" stroke-width="2"/>
-          
-          <!-- 白面無橘斑！臉頰為白灰層次 -->
-          <circle cx="168" cy="148" r="10" fill="#f8f9fa" />
+          <!-- 白面珍珠特徵：雪白臉蛋與頭部 -->
+          <circle cx="76" cy="86" r="28" fill="#ffffff" stroke="#e3e8eb" stroke-width="1.5"/>
 
-          <!-- 鳥喙 Beak -->
-          <g id="beakGroup">
-            <path d="M 172 140 L 190 148 L 172 155 Z" fill="#a4b0be" />
-            <path d="M 172 147 L 186 150 L 172 153 Z" fill="#747d8c" />
-          </g>
+          <!-- 粉嫩小鳥喙 -->
+          <path id="beak" d="M 94 86 L 108 92 L 94 98 Z" fill="#d2b7a3" />
 
-          <!-- 黑色水汪汪眼睛 Eye -->
-          <g id="eyeGroup" class="eye">
-            <circle cx="156" cy="135" r="7" fill="#2d3436" />
-            <circle cx="158" cy="133" r="2.2" fill="#ffffff" />
-          </g>
+          <!-- 水汪汪黑眼睛（含高光） -->
+          <circle id="birdEye" cx="82" cy="80" r="5" fill="#2d3436"/>
+          <circle cx="83.5" cy="78.5" r="1.6" fill="#ffffff"/>
 
-          <!-- 摸頭熱區 (安全舒適區) -->
-          <circle class="hit-area hit-head" id="hitHead" cx="145" cy="130" r="28" />
+          <!-- 摸頭安全區 -->
+          <circle class="touch-zone" id="touchHead" cx="74" cy="78" r="24" />
         </g>
       </svg>
     </div>
-
-    <!-- 輔助按鈕：開啟/關閉區域可視化 -->
-    <button class="toggle-debug-btn" id="toggleDebugBtn">顯示撫摸安全區 / 警告禁區</button>
-
-    <!-- 快捷操作盤 -->
-    <div class="controls-grid">
-      <button class="btn btn-feed" id="btnFeed">🌾 餵綜合穀物</button>
-      <button class="btn btn-feed" id="btnTreat">🌻 葵花子獎勵</button>
-      <button class="btn btn-whistle" id="btnWhistle">🎵 吹口哨交流</button>
-      <button class="btn btn-cage" id="btnCage">🚪 放風 / 回籠</button>
-      <button class="btn btn-clap" id="btnClap">👏 突然大聲拍手</button>
-      <button class="btn btn-hand" id="btnGrab">🖐️ 抓取玄鳳</button>
-    </div>
   </div>
 
-  <!-- 圖鑑與科普區 (C 區塊) -->
-  <div>
-    <div class="tabs">
-      <button class="tab-btn active" data-tab="tab-map">身體觸摸指南</button>
-      <button class="tab-btn" data-tab="tab-behavior">行為解碼</button>
-      <button class="tab-btn" data-tab="tab-diet">飲食與安全</button>
-      <button class="tab-btn" data-tab="tab-log">飼養事件日誌</button>
-    </div>
+  <!-- 互動控制盤（含冷卻與限制提示） -->
+  <div class="action-panel">
+    <button class="btn" id="btnFeedGrain">
+      🌾 綜合穀物 <span id="grainCoolLabel"></span>
+    </button>
+    <button class="btn" id="btnFeedTreat">
+      🌻 葵花子 <span class="limit-badge" id="treatQuotaLabel">(剩 3 顆)</span>
+    </button>
+    <button class="btn" id="btnWhistle">
+      🎵 吹口哨交流
+    </button>
+    <button class="btn" id="btnCallCage">
+      🚪 輕喚進出籠
+    </button>
+  </div>
 
-    <div class="tab-content" id="tab-map">
-      <h3>身體撫摸禁區與安全區說明</h3>
-      <div class="zone-legend" style="margin-top: 10px;">
-        <div class="legend-item"><span class="badge-color badge-green"></span> 綠色安全區：頭頂、臉頰兩側</div>
-        <div class="legend-item"><span class="badge-color badge-red"></span> 紅色禁摸區：翅膀、背部、尾巴</div>
-        <div class="legend-item"><span class="badge-color badge-yellow"></span> 黃色警戒區：腹部抓握</div>
+  <!-- 下方家具商店與飼養日誌 -->
+  <div class="bottom-section">
+    <!-- 家具商店 -->
+    <div class="card">
+      <h3>🛋️ 居家家具商店 (依親密度解鎖)</h3>
+      <div class="shop-list">
+        <div class="shop-item">
+          <div>
+            <strong>🪴 窗邊小綠植</strong>
+            <div style="font-size: 0.8rem; color: var(--text-muted);">解鎖條件：親密度 Lv.1 (花費 20 幣)</div>
+          </div>
+          <button class="shop-btn" id="buyPlantBtn" data-price="20" data-target="plantDeco">購買</button>
+        </div>
+
+        <div class="shop-item">
+          <div>
+            <strong>🪵 原木站棍玩具</strong>
+            <div style="font-size: 0.8rem; color: var(--text-muted);">解鎖條件：親密度 Lv.2 (花費 50 幣)</div>
+          </div>
+          <button class="shop-btn" id="buyPerchBtn" data-price="50" data-target="perchDeco">購買</button>
+        </div>
+
+        <div class="shop-item">
+          <div>
+            <strong>🧶 溫暖編織地毯</strong>
+            <div style="font-size: 0.8rem; color: var(--text-muted);">解鎖條件：親密度 Lv.3 (花費 90 幣)</div>
+          </div>
+          <button class="shop-btn" id="buyRugBtn" data-price="90" data-target="rugDeco">購買</button>
+        </div>
       </div>
-      <p><strong>為什麼不能摸背部、翅膀與尾羽？</strong><br>
-      玄鳳鸚鵡成年後，背部與尾脂腺附近為發情敏感帶。經常撫摸軀幹或下半身會刺激發情荷爾蒙分泌，導致鸚鵡產生求偶挫折、母鳥卡蛋（產蛋過度危及性命）或因荷爾蒙紊亂出現攻擊性拔毛。同時，摸尾巴容易讓牠誤判遭到攻擊，本能會立即回頭防衛或啄咬。</p>
     </div>
 
-    <div class="tab-content" id="tab-behavior" style="display: none;">
-      <h3>敏感行為解碼卡片</h3>
-      <p style="margin-bottom: 12px;"><strong>Q1：為什麼大聲拍手會大幅扣心情與親密度？</strong><br>
-      玄鳳鸚鵡在自然界屬於被捕食者（Prey animals），視力範圍廣但心臟小、聽覺敏銳。突然的拍手聲、甩門聲或掉落聲會觸發「恐慌夜驚（Night Fright）」式的逃跑反射，讓牠對周圍環境陷入恐懼與焦慮。</p>
-      
-      <p><strong>Q2：為什麼不能直接用手握住牠？</strong><br>
-      掠食者（如猛禽或蛇）捕捉玄鳳時正是採緊密包裹的抓握方式。除非經過減敏訓練或就醫固定，直接「全手掌抓握」會觸發瀕死壓迫感，導致牠拼命咬手並對人類手部產生長期創傷恐懼。</p>
-    </div>
-
-    <div class="tab-content" id="tab-diet" style="display: none;">
-      <h3>飲食健康清單</h3>
-      <ul style="list-style: none; padding-left: 0;">
-        <li style="margin-bottom: 8px;"><span class="food-tag-safe">✔ 安全主食：</span> 多穀物滋養丸（70%）、無殼小米、加納利子、紅大粟、燕麥。</li>
-        <li style="margin-bottom: 8px;"><span class="food-tag-safe">✔ 安全蔬果：</span> 地瓜葉、青江菜、胡蘿蔔、蘋果（去籽）、南瓜。</li>
-        <li style="margin-bottom: 8px;"><span class="food-tag-danger">⚠ 葵花子警示：</span> 脂肪含量極高，容易造成脂肪肝與肥胖。只能當作最高獎勵，每天不可超過 3-5 顆！</li>
-        <li style="margin-bottom: 8px;"><span class="food-tag-danger">❌ 絕對致命毒物：</span> 酪梨（含沛仙素可致心臟衰竭）、巧克力、洋蔥與大蒜、含咖啡因與酒精飲料、蘋果籽。</li>
-      </ul>
-    </div>
-
-    <div class="tab-content" id="tab-log" style="display: none;">
-      <h3>即時日誌與離線統計</h3>
-      <div id="statSummary" style="font-size: 0.9rem; margin-bottom: 8px; color: var(--text-main);"></div>
-      <div class="log-box" id="eventLogs"></div>
+    <!-- 狀態紀錄與小知識 -->
+    <div class="card">
+      <h3>📖 Siri 飼養即時日誌</h3>
+      <div id="statusNotice" style="font-size: 0.88rem; color: #b76e28; margin-bottom: 8px;">
+        ※ 提示：滑鼠按住玄鳳可拖曳抓取，但玄鳳極度害怕手抓，會大幅掉親密度！
+      </div>
+      <div id="logText" style="font-size: 0.82rem; color: var(--text-muted); max-height: 120px; overflow-y: auto;">
+        <div>- 網頁已載入，水彩寫實玄鳳正在客廳漫步。</div>
+      </div>
     </div>
   </div>
 </div>
 
 <script>
 /**
- * Web Audio API 真實合成音效引擎 (無須外掛 mp3 檔案)
+ * 簡易真實音效引擎（Web Audio API）
  */
-class SoundEngine {
+class SoundFx {
   constructor() {
     this.ctx = null;
   }
-
   init() {
     if (!this.ctx) {
       const AudioCtx = window.AudioContext || window.webkitAudioContext;
       this.ctx = new AudioCtx();
     }
-    if (this.ctx.state === 'suspended') {
-      this.ctx.resume();
-    }
+    if (this.ctx.state === 'suspended') this.ctx.resume();
   }
-
-  // 撫摸舒適的輕柔「啾~」
   chirp() {
     this.init();
     const osc = this.ctx.createOscillator();
     const gain = this.ctx.createGain();
     const now = this.ctx.currentTime;
-
-    osc.type = 'sine';
-    osc.frequency.setValueAtTime(2200, now);
-    osc.frequency.exponentialRampToValueAtTime(3200, now + 0.08);
-    osc.frequency.exponentialRampToValueAtTime(2600, now + 0.18);
-
-    gain.gain.setValueAtTime(0, now);
-    gain.gain.linearRampToValueAtTime(0.2, now + 0.03);
-    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.18);
-
-    osc.connect(gain);
-    gain.connect(this.ctx.destination);
-    osc.start(now);
-    osc.stop(now + 0.2);
+    osc.frequency.setValueAtTime(2400, now);
+    osc.frequency.exponentialRampToValueAtTime(3200, now + 0.1);
+    gain.gain.setValueAtTime(0.2, now);
+    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.2);
+    osc.connect(gain); gain.connect(this.ctx.destination);
+    osc.start(now); osc.stop(now + 0.22);
   }
-
-  // 吹口哨歡快雙音
-  whistle() {
-    this.init();
-    const notes = [1760, 2093, 2637]; // A6, C7, E7
-    notes.forEach((freq, idx) => {
-      const osc = this.ctx.createOscillator();
-      const gain = this.ctx.createGain();
-      const st = this.ctx.currentTime + idx * 0.12;
-
-      osc.type = 'sine';
-      osc.frequency.setValueAtTime(freq, st);
-      gain.gain.setValueAtTime(0, st);
-      gain.gain.linearRampToValueAtTime(0.25, st + 0.02);
-      gain.gain.exponentialRampToValueAtTime(0.001, st + 0.18);
-
-      osc.connect(gain);
-      gain.connect(this.ctx.destination);
-      osc.start(st);
-      osc.stop(st + 0.2);
-    });
-  }
-
-  // 啃咬種子脆響
-  crunch() {
-    this.init();
-    const now = this.ctx.currentTime;
-    for (let i = 0; i < 3; i++) {
-      const t = now + i * 0.08;
-      const osc = this.ctx.createOscillator();
-      const gain = this.ctx.createGain();
-      osc.type = 'triangle';
-      osc.frequency.setValueAtTime(800 + Math.random() * 400, t);
-      gain.gain.setValueAtTime(0.15, t);
-      gain.gain.exponentialRampToValueAtTime(0.01, t + 0.04);
-      osc.connect(gain);
-      gain.connect(this.ctx.destination);
-      osc.start(t);
-      osc.stop(t + 0.05);
-    }
-  }
-
-  // 防衛哈氣聲 Hiss (摸翅膀/生氣)
   hiss() {
     this.init();
-    const bufferSize = this.ctx.sampleRate * 0.3;
+    const bufferSize = this.ctx.sampleRate * 0.25;
     const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
     const data = buffer.getChannelData(0);
-    for (let i = 0; i < bufferSize; i++) {
-      data[i] = (Math.random() * 2 - 1) * 0.3;
-    }
-
+    for (let i = 0; i < bufferSize; i++) data[i] = (Math.random() * 2 - 1) * 0.2;
     const noise = this.ctx.createBufferSource();
     noise.buffer = buffer;
-
     const filter = this.ctx.createBiquadFilter();
     filter.type = 'bandpass';
-    filter.frequency.value = 4500;
-    filter.Q.value = 1.8;
-
+    filter.frequency.value = 4000;
     const gain = this.ctx.createGain();
-    const now = this.ctx.currentTime;
-    gain.gain.setValueAtTime(0.2, now);
-    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.28);
-
-    noise.connect(filter);
-    filter.connect(gain);
-    gain.connect(this.ctx.destination);
-
-    noise.start(now);
+    gain.gain.setValueAtTime(0.2, this.ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + 0.25);
+    noise.connect(filter); filter.connect(gain); gain.connect(this.ctx.destination);
+    noise.start();
   }
-
-  // 驚恐尖叫 (抓握、驚嚇)
   scream() {
     this.init();
     const osc = this.ctx.createOscillator();
     const gain = this.ctx.createGain();
     const now = this.ctx.currentTime;
-
     osc.type = 'sawtooth';
     osc.frequency.setValueAtTime(3200, now);
-    osc.frequency.linearRampToValueAtTime(4500, now + 0.1);
-    osc.frequency.linearRampToValueAtTime(2800, now + 0.3);
-
-    gain.gain.setValueAtTime(0.3, now);
-    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.35);
-
-    osc.connect(gain);
-    gain.connect(this.ctx.destination);
-    osc.start(now);
-    osc.stop(now + 0.38);
-  }
-
-  // 啄手咬人短促警告
-  peck() {
-    this.init();
-    const osc = this.ctx.createOscillator();
-    const gain = this.ctx.createGain();
-    const now = this.ctx.currentTime;
-
-    osc.type = 'square';
-    osc.frequency.setValueAtTime(1400, now);
-    osc.frequency.exponentialRampToValueAtTime(400, now + 0.08);
-
+    osc.frequency.linearRampToValueAtTime(4600, now + 0.12);
     gain.gain.setValueAtTime(0.25, now);
-    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.08);
-
-    osc.connect(gain);
-    gain.connect(this.ctx.destination);
-    osc.start(now);
-    osc.stop(now + 0.09);
+    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
+    osc.connect(gain); gain.connect(this.ctx.destination);
+    osc.start(now); osc.stop(now + 0.32);
   }
-}
-
-const audio = new SoundEngine();
-
-/**
- * 寵物核心狀態與行為邏輯
- */
-const PetState = {
-  name: 'Siri',
-  hunger: 80,
-  happiness: 85,
-  bond: 50,
-  inCage: false,
-  scaredCount: 0,
-  lastUpdate: Date.now(),
-  lastCageChange: Date.now()
-};
-
-// DOM 元素引用
-const petNameInput = document.getElementById('petNameInput');
-const hungerBar = document.getElementById('hungerBar');
-const hungerText = document.getElementById('hungerText');
-const happinessBar = document.getElementById('happinessBar');
-const happinessText = document.getElementById('happinessText');
-const bondBar = document.getElementById('bondBar');
-const bondText = document.getElementById('bondText');
-const bondLevel = document.getElementById('bondLevel');
-const statusMessage = document.getElementById('statusMessage');
-const reactionBubble = document.getElementById('reactionBubble');
-const cageOverlay = document.getElementById('cageOverlay');
-const cockatielSvg = document.getElementById('cockatiel-svg');
-const crestGroup = document.getElementById('crestGroup');
-const eyeGroup = document.getElementById('eyeGroup');
-const beakGroup = document.getElementById('beakGroup');
-const eventLogs = document.getElementById('eventLogs');
-const statSummary = document.getElementById('statSummary');
-
-// 初始化 LocalStorage 讀取與離線結算
-function loadState() {
-  const saved = localStorage.getItem('cockatiel_save');
-  if (saved) {
-    try {
-      const data = JSON.parse(saved);
-      PetState.name = data.name || 'Siri';
-      PetState.hunger = Math.max(0, Math.min(100, data.hunger));
-      PetState.happiness = Math.max(0, Math.min(100, data.happiness));
-      PetState.bond = Math.max(0, data.bond);
-      PetState.inCage = !!data.inCage;
-      PetState.scaredCount = data.scaredCount || 0;
-      
-      // 離線時間結算
-      const now = Date.now();
-      const offlineMinutes = Math.floor((now - (data.lastUpdate || now)) / 60000);
-      
-      if (offlineMinutes > 30) {
-        const decayCycles = Math.min(offlineMinutes / 30, 20); // 最多結算 10 小時
-        const hungerLoss = Math.floor(decayCycles * 4);
-        const happyLoss = Math.floor(decayCycles * 3);
-        const bondLoss = Math.floor(decayCycles * 2);
-
-        PetState.hunger = Math.max(0, PetState.hunger - hungerLoss);
-        PetState.happiness = Math.max(10, PetState.happiness - happyLoss);
-        PetState.bond = Math.max(0, PetState.bond - bondLoss);
-
-        logEvent(`離線了 ${Math.floor(offlineMinutes / 60)} 小時，${PetState.name} 因太久沒被理而生悶氣，親密度 -${bondLoss}`);
-        showBubble(`你終於回來了...哼！`);
-      }
-    } catch(e) {
-      console.error(e);
+  crunch() {
+    this.init();
+    const now = this.ctx.currentTime;
+    for (let i = 0; i < 2; i++) {
+      const osc = this.ctx.createOscillator();
+      const gain = this.ctx.createGain();
+      osc.type = 'triangle';
+      osc.frequency.setValueAtTime(900 + i * 200, now + i * 0.07);
+      gain.gain.setValueAtTime(0.15, now + i * 0.07);
+      gain.gain.exponentialRampToValueAtTime(0.01, now + i * 0.07 + 0.05);
+      osc.connect(gain); gain.connect(this.ctx.destination);
+      osc.start(now + i * 0.07); osc.stop(now + i * 0.07 + 0.06);
     }
   }
-  petNameInput.value = PetState.name;
-  updateUI();
-}
-
-function saveState() {
-  PetState.lastUpdate = Date.now();
-  localStorage.setItem('cockatiel_save', JSON.stringify(PetState));
-}
-
-// 畫面與數值更新
-function updateUI() {
-  // 邊界檢查
-  PetState.hunger = Math.max(0, Math.min(100, PetState.hunger));
-  PetState.happiness = Math.max(0, Math.min(100, PetState.happiness));
-  PetState.bond = Math.max(0, PetState.bond);
-
-  hungerBar.style.width = PetState.hunger + '%';
-  hungerText.innerText = Math.round(PetState.hunger) + '%';
-
-  happinessBar.style.width = PetState.happiness + '%';
-  happinessText.innerText = Math.round(PetState.happiness) + '%';
-
-  const currentLevel = Math.floor(PetState.bond / 100) + 1;
-  const levelProgress = PetState.bond % 100;
-  bondLevel.innerText = currentLevel;
-  bondBar.style.width = levelProgress + '%';
-  bondText.innerText = `${Math.round(levelProgress)}/100`;
-
-  if (PetState.inCage) {
-    cageOverlay.classList.add('in-cage');
-  } else {
-    cageOverlay.classList.remove('in-cage');
+  whistle() {
+    this.init();
+    [1760, 2200, 2640].forEach((freq, idx) => {
+      const osc = this.ctx.createOscillator();
+      const gain = this.ctx.createGain();
+      const t = this.ctx.currentTime + idx * 0.11;
+      osc.frequency.setValueAtTime(freq, t);
+      gain.gain.setValueAtTime(0.18, t);
+      gain.gain.exponentialRampToValueAtTime(0.01, t + 0.14);
+      osc.connect(gain); gain.connect(this.ctx.destination);
+      osc.start(t); osc.stop(t + 0.16);
+    });
   }
-
-  // 心情過低躲避姿態
-  if (PetState.happiness < 30) {
-    cockatielSvg.classList.add('turn-back');
-    statusMessage.innerText = `${PetState.name} 心情低落，背對著你縮在角落...`;
-  } else {
-    cockatielSvg.classList.remove('turn-back');
-  }
-
-  statSummary.innerText = `累積受到驚嚇次數: ${PetState.scaredCount} 次 | 籠內狀態: ${PetState.inCage ? '在籠內' : '放風中'}`;
-  saveState();
 }
 
-function showBubble(text) {
-  reactionBubble.innerText = text;
-  reactionBubble.classList.add('show');
-  clearTimeout(reactionBubble.hideTimer);
-  reactionBubble.hideTimer = setTimeout(() => {
-    reactionBubble.classList.remove('show');
-  }, 1800);
+const sfx = new SoundFx();
+
+// 核心寵物數據與設定
+const App = {
+  name: 'Siri',
+  hunger: 75,
+  happiness: 80,
+  bond: 50,
+  coins: 50,
+  inCage: false,
+  sunflowerQuota: 3,     // 葵花子每日上限 3 顆
+  grainCooldown: false,  // 穀物冷卻
+  furniture: {
+    plantDeco: false,
+    perchDeco: false,
+    rugDeco: false
+  }
+};
+
+// DOM 節點
+const birdActor = document.getElementById('birdActor');
+const homeRoom = document.getElementById('homeRoom');
+const crestGroup = document.getElementById('crestGroup');
+const birdSpeech = document.getElementById('birdSpeech');
+const hungerBar = document.getElementById('hungerBar');
+const hungerLabel = document.getElementById('hungerLabel');
+const happyBar = document.getElementById('happyBar');
+const happyLabel = document.getElementById('happyLabel');
+const bondBar = document.getElementById('bondBar');
+const bondLabel = document.getElementById('bondLabel');
+const bondLevelText = document.getElementById('bondLevelText');
+const heartCoinDisplay = document.getElementById('heartCoinDisplay');
+const treatQuotaLabel = document.getElementById('treatQuotaLabel');
+const grainCoolLabel = document.getElementById('grainCoolLabel');
+const cageStatusText = document.getElementById('cageStatusText');
+const logText = document.getElementById('logText');
+
+function addLog(msg) {
+  const line = document.createElement('div');
+  line.innerText = `[${new Date().toLocaleTimeString()}] ${msg}`;
+  logText.prepend(line);
+}
+
+function speak(msg) {
+  birdSpeech.innerText = msg;
+  const rect = birdActor.getBoundingClientRect();
+  const roomRect = homeRoom.getBoundingClientRect();
+  birdSpeech.style.left = `${rect.left - roomRect.left}px`;
+  birdSpeech.style.top = `${rect.top - roomRect.top - 35}px`;
+  birdSpeech.classList.add('active');
+  clearTimeout(birdSpeech.timer);
+  birdSpeech.timer = setTimeout(() => birdSpeech.classList.remove('active'), 1800);
 }
 
 function setCrest(type) {
   crestGroup.className.baseVal = `crest crest-${type}`;
 }
 
-function triggerShake() {
-  cockatielSvg.classList.remove('shake');
-  void cockatielSvg.offsetWidth;
-  cockatielSvg.classList.add('shake');
+function updateUI() {
+  App.hunger = Math.max(0, Math.min(100, App.hunger));
+  App.happiness = Math.max(0, Math.min(100, App.happiness));
+  App.bond = Math.max(0, App.bond);
+
+  hungerBar.style.width = App.hunger + '%';
+  hungerLabel.innerText = Math.round(App.hunger) + '%';
+  happyBar.style.width = App.happiness + '%';
+  happyLabel.innerText = Math.round(App.happiness) + '%';
+
+  const level = Math.floor(App.bond / 100) + 1;
+  bondLevelText.innerText = level;
+  bondBar.style.width = (App.bond % 100) + '%';
+  bondLabel.innerText = `${Math.round(App.bond % 100)}/100`;
+
+  heartCoinDisplay.innerText = App.coins;
+  treatQuotaLabel.innerText = `(剩 ${App.sunflowerQuota} 顆)`;
+
+  // 鳥籠狀態
+  if (App.inCage) {
+    birdActor.classList.add('in-cage');
+    cageStatusText.innerText = '休息閉關中 (勿擾)';
+  } else {
+    birdActor.classList.remove('in-cage');
+    cageStatusText.innerText = '出籠探索中';
+  }
+
+  // 檢查商店按鈕可用度
+  document.querySelectorAll('.shop-btn').forEach(btn => {
+    const cost = parseInt(btn.dataset.price);
+    const key = btn.dataset.target;
+    if (App.furniture[key]) {
+      btn.innerText = '已佈置';
+      btn.disabled = true;
+    } else {
+      btn.disabled = App.coins < cost;
+    }
+  });
+
+  saveState();
 }
 
-function logEvent(msg) {
-  const time = new Date().toLocaleTimeString();
-  const line = document.createElement('div');
-  line.innerText = `[${time}] ${msg}`;
-  eventLogs.prepend(line);
+// 存檔與讀檔
+function saveState() {
+  localStorage.setItem('watercolor_cockatiel', JSON.stringify({
+    ...App,
+    lastTick: Date.now()
+  }));
+}
+
+function loadState() {
+  const data = localStorage.getItem('watercolor_cockatiel');
+  if (data) {
+    try {
+      const parsed = JSON.parse(data);
+      Object.assign(App, parsed);
+      // 家具還原
+      Object.keys(App.furniture).forEach(k => {
+        if (App.furniture[k]) {
+          document.getElementById(k).classList.add('unlocked');
+        }
+      });
+    } catch(e) {}
+  }
+  document.getElementById('birdNameInput').value = App.name;
+  updateUI();
 }
 
 /**
- * 核心交互事件
+ * 拖曳玄鳳 (物理抓取機制)
  */
+let isDragging = false;
+let startX, startY, origX, origY;
 
-// 1. 撫摸頭部 (正面)
-function petHead() {
-  if (PetState.happiness < 30) {
-    // 心情極差被硬逗
-    audio.peck();
-    PetState.happiness = Math.max(0, PetState.happiness - 20);
-    PetState.bond = Math.max(0, PetState.bond - 15);
-    setCrest('angry');
-    showBubble('別煩我！💢');
-    statusMessage.innerText = `${PetState.name} 心情不好被硬逗，憤怒轉身躲開！`;
-    logEvent(`心情不佳時強行摸頭，親密度 -15`);
+birdActor.addEventListener('mousedown', (e) => {
+  // 如果點擊的是撫摸熱區，不啟動拖曳
+  if (e.target.classList.contains('touch-zone')) return;
+  if (App.inCage) return; // 籠內不能拖
+
+  isDragging = true;
+  startX = e.clientX;
+  startY = e.clientY;
+  origX = birdActor.offsetLeft;
+  origY = birdActor.offsetTop;
+
+  birdActor.classList.add('drag-struggle');
+  setCrest('scared');
+  sfx.scream();
+  speak('住手！不要抓我！😱');
+
+  // 抓取懲罰
+  App.happiness = Math.max(0, App.happiness - 25);
+  App.bond = Math.max(0, App.bond - 15);
+  addLog(`用手粗暴抓取玄鳳！心情 -25, 親密度 -15`);
+  updateUI();
+});
+
+window.addEventListener('mousemove', (e) => {
+  if (!isDragging) return;
+  const dx = e.clientX - startX;
+  const dy = e.clientY - startY;
+  birdActor.style.left = `${origX + dx}px`;
+  birdActor.style.top = `${origY + dy}px`;
+});
+
+window.addEventListener('mouseup', () => {
+  if (!isDragging) return;
+  isDragging = false;
+  birdActor.classList.remove('drag-struggle');
+  setCrest('excited');
+  // 限制留在房間邊界內
+  const maxX = homeRoom.clientWidth - 150;
+  const maxY = homeRoom.clientHeight - 190;
+  birdActor.style.left = `${Math.min(Math.max(30, birdActor.offsetLeft), maxX)}px`;
+  birdActor.style.top = `${Math.min(Math.max(50, birdActor.offsetTop), maxY)}px`;
+});
+
+/**
+ * 撫摸熱區
+ */
+// 摸頭
+document.getElementById('touchHead').addEventListener('click', (e) => {
+  e.stopPropagation();
+  if (App.inCage) {
+    sfx.hiss();
+    speak('我在籠子裡休息，不要吵我...💢');
+    App.happiness = Math.max(0, App.happiness - 10);
     updateUI();
     return;
   }
-
-  audio.chirp();
-  PetState.happiness = Math.min(100, PetState.happiness + 10);
-  PetState.bond += 5;
+  sfx.chirp();
   setCrest('relaxed');
-  eyeGroup.classList.add('eye-closed');
-  showBubble('啾~~ ❤️ (舒服瞇眼)');
-  statusMessage.innerText = `${PetState.name} 享受著摸摸，舒服地垂下頭羽。`;
-  logEvent(`摸摸頭部，心情 +10, 親密度 +5`);
-
-  setTimeout(() => {
-    eyeGroup.classList.remove('eye-closed');
-  }, 1200);
-
+  App.happiness = Math.min(100, App.happiness + 10);
+  App.bond += 5;
+  App.coins += 2;
+  speak('啾~ 好舒服 (瞇眼) ❤️');
+  addLog(`溫柔撫摸頭冠，親密度 +5, 愛心幣 +2`);
   updateUI();
-}
+});
 
-// 2. 摸翅膀 (負面：禁區)
-function touchWing() {
-  audio.hiss();
-  PetState.happiness = Math.max(0, PetState.happiness - 15);
-  PetState.bond = Math.max(0, PetState.bond - 10);
+// 摸翅膀（禁區）
+document.getElementById('touchWing').addEventListener('click', (e) => {
+  e.stopPropagation();
+  sfx.hiss();
   setCrest('angry');
-  beakGroup.classList.add('beak-open');
-  triggerShake();
-  showBubble('嘶——！(張嘴哈氣) ❌');
-  statusMessage.innerText = `摸翅膀讓 ${PetState.name} 感到巨大威脅與壓力，發出哈氣聲！`;
-  logEvent(`摸了禁區翅膀！心情 -15, 親密度 -10`);
+  birdActor.classList.add('shake-anim');
+  setTimeout(() => birdActor.classList.remove('shake-anim'), 400);
+  App.happiness = Math.max(0, App.happiness - 15);
+  App.bond = Math.max(0, App.bond - 10);
+  speak('嘶——！碰翅膀會緊張！❌');
+  addLog(`觸碰敏感翅膀禁區！心情 -15, 親密度 -10`);
+  updateUI();
+});
 
-  setTimeout(() => {
-    beakGroup.classList.remove('beak-open');
-    setCrest('relaxed');
+// 摸尾巴（防衛）
+document.getElementById('touchTail').addEventListener('click', (e) => {
+  e.stopPropagation();
+  sfx.hiss();
+  setCrest('angry');
+  App.happiness = Math.max(0, App.happiness - 15);
+  App.bond = Math.max(0, App.bond - 10);
+  speak('嘎！小心我回頭啄你！💢');
+  addLog(`撫碰尾羽觸發防衛反應！親密度 -10`);
+  updateUI();
+});
+
+/**
+ * 飲食限制機制
+ */
+// 綜合穀物 (含 3 秒冷卻 + 飽食度上限)
+document.getElementById('btnFeedGrain').addEventListener('click', () => {
+  if (App.grainCooldown) return;
+  if (App.hunger >= 100) {
+    speak('好飽喔，吃不下了~ 🥣');
+    return;
+  }
+  sfx.crunch();
+  App.hunger = Math.min(100, App.hunger + 20);
+  App.happiness = Math.min(100, App.happiness + 5);
+  speak('卡滋卡滋 (享用穀物) 🌾');
+  addLog(`餵食綜合穀物，飽食度 +20`);
+
+  // 冷卻倒數
+  App.grainCooldown = true;
+  let cd = 3;
+  grainCoolLabel.innerText = `(${cd}s)`;
+  const timer = setInterval(() => {
+    cd--;
+    if (cd > 0) grainCoolLabel.innerText = `(${cd}s)`;
+    else {
+      clearInterval(timer);
+      grainCoolLabel.innerText = '';
+      App.grainCooldown = false;
+    }
   }, 1000);
 
   updateUI();
-}
+});
 
-// 3. 摸尾巴 (負面：防衛啄手)
-function touchTail() {
-  audio.peck();
-  PetState.happiness = Math.max(0, PetState.happiness - 15);
-  PetState.bond = Math.max(0, PetState.bond - 10);
-  setCrest('angry');
-  triggerShake();
-  showBubble('嘎！(回頭啄咬) 💢');
-  statusMessage.innerText = `${PetState.name} 以為尾巴被天敵咬住，迅速轉頭啄了你一下！`;
-  logEvent(`摸了尾羽引發防衛啄咬！心情 -15, 親密度 -10`);
-
-  setTimeout(() => {
-    setCrest('relaxed');
-  }, 900);
-
-  updateUI();
-}
-
-// 4. 抓握玄鳳 (嚴重負面)
-function grabBird() {
-  audio.scream();
-  PetState.happiness = Math.max(0, PetState.happiness - 30);
-  PetState.bond = Math.max(0, PetState.bond - 20);
-  PetState.scaredCount++;
-  setCrest('scared');
-  cockatielSvg.classList.add('struggle');
-  showBubble('啊——！！(恐慌掙扎) 😱');
-  statusMessage.innerText = `你試圖緊緊抓住 ${PetState.name}，觸發猛禽抓捕恐懼！`;
-  logEvent(`強行抓握！親密度暴跌 -20, 心情 -30`);
-
-  setTimeout(() => {
-    cockatielSvg.classList.remove('struggle');
-    setCrest('excited');
-  }, 1500);
-
-  updateUI();
-}
-
-// 5. 大聲拍手 (驚嚇)
-function clapLoudly() {
-  audio.scream();
-  PetState.happiness = Math.max(0, PetState.happiness - 25);
-  PetState.bond = Math.max(0, PetState.bond - 15);
-  PetState.scaredCount++;
-  setCrest('scared');
-  triggerShake();
-  showBubble('！？？(嚇到直立)');
-  statusMessage.innerText = `突然的巨大拍手聲引發 ${PetState.name} 的逃生警戒本能！`;
-  logEvent(`突發巨響嚇到鳥！心情 -25, 親密度 -15`);
-
-  setTimeout(() => {
-    setCrest('excited');
-  }, 1400);
-
-  updateUI();
-}
-
-// 6. 吹口哨交流
-function whistleTogether() {
-  audio.whistle();
-  PetState.happiness = Math.min(100, PetState.happiness + 20);
-  PetState.bond += 10;
+// 葵花子 (限 3 顆)
+document.getElementById('btnFeedTreat').addEventListener('click', () => {
+  if (App.sunflowerQuota <= 0) {
+    speak('今日葵花子已達上限，再吃會脂肪肝！⚠️');
+    return;
+  }
+  if (App.hunger >= 100) {
+    speak('肚子太撐啦，等消化一下再吃！');
+    return;
+  }
+  sfx.crunch();
+  App.sunflowerQuota--;
+  App.hunger = Math.min(100, App.hunger + 15);
+  App.happiness = Math.min(100, App.happiness + 25);
+  App.bond += 8;
+  App.coins += 5;
   setCrest('excited');
-  showBubble('嗶嗶♪ 搖頭唱歌 🎶');
-  statusMessage.innerText = `${PetState.name} 開心地跟著口哨打節拍，高聳豎起羽冠！`;
-  logEvent(`吹口哨合奏，心情 +20, 親密度 +10`);
-
-  setTimeout(() => {
-    setCrest('relaxed');
-  }, 1600);
-
+  speak('最愛葵花子了！開心！😍✨');
+  addLog(`餵食獎勵葵花子！心情 +25, 剩餘配額: ${App.sunflowerQuota}`);
   updateUI();
-}
+});
 
-// 7. 餵食主糧
-function feedFood() {
-  audio.crunch();
-  PetState.hunger = Math.min(100, PetState.hunger + 25);
-  PetState.happiness = Math.min(100, PetState.happiness + 10);
-  PetState.bond += 3;
-  showBubble('卡滋卡滋...穀物真香 🌾');
-  statusMessage.innerText = `${PetState.name} 正認真挑選著無殼穀物進食。`;
-  logEvent(`餵食綜合穀物，飽食度 +25`);
-  updateUI();
-}
-
-// 8. 葵花子獎勵
-function treatSunflower() {
-  audio.crunch();
-  PetState.hunger = Math.min(100, PetState.hunger + 15);
-  PetState.happiness = Math.min(100, PetState.happiness + 25);
-  PetState.bond += 8;
+// 吹口哨
+document.getElementById('btnWhistle').addEventListener('click', () => {
+  if (App.inCage) {
+    speak('在小窩裡打瞌睡，不想唱...💤');
+    return;
+  }
+  sfx.whistle();
   setCrest('excited');
-  showBubble('是葵花子！！😍✨');
-  statusMessage.innerText = `${PetState.name} 熟練地用鳥喙剝開葵花子殼，心情大好！`;
-  logEvent(`餵食美味葵花子，心情大增 +25`);
+  App.happiness = Math.min(100, App.happiness + 15);
+  App.bond += 6;
+  App.coins += 3;
+  speak('嗶嗶♪ 搖頭唱歌 🎶');
+  addLog(`吹口哨互動，親密度 +6, 愛心幣 +3`);
   updateUI();
-}
+});
 
-// 9. 出籠 / 回籠
-function toggleCage() {
-  PetState.inCage = !PetState.inCage;
-  PetState.lastCageChange = Date.now();
-  if (PetState.inCage) {
-    showBubble('回小窩休息 🏠');
-    statusMessage.innerText = `${PetState.name} 回到籠內理毛休息。`;
-    logEvent(`放回籠內休息`);
+// 籠子自主與手動切換
+document.getElementById('btnCallCage').addEventListener('click', () => {
+  App.inCage = !App.inCage;
+  if (App.inCage) {
+    speak('回籠子小歇一下 🏠');
+    addLog(`引導玄鳳回籠`);
   } else {
-    audio.chirp();
-    PetState.happiness = Math.min(100, PetState.happiness + 15);
-    showBubble('出來放風啦！🪽');
-    statusMessage.innerText = `${PetState.name} 展翅跳到外側站棍，視野開闊！`;
-    logEvent(`開籠放風，心情 +15`);
+    speak('出來客廳逛街！🪽');
+    addLog(`放風出籠`);
   }
   updateUI();
-}
-
-// 綁定各按鈕與熱區事件
-document.getElementById('hitHead').addEventListener('click', petHead);
-document.getElementById('hitWing').addEventListener('click', touchWing);
-document.getElementById('hitTail').addEventListener('click', touchTail);
-document.getElementById('hitBody').addEventListener('click', grabBird);
-
-document.getElementById('btnFeed').addEventListener('click', feedFood);
-document.getElementById('btnTreat').addEventListener('click', treatSunflower);
-document.getElementById('btnWhistle').addEventListener('click', whistleTogether);
-document.getElementById('btnCage').addEventListener('click', toggleCage);
-document.getElementById('btnClap').addEventListener('click', clapLoudly);
-document.getElementById('btnGrab').addEventListener('click', grabBird);
-
-petNameInput.addEventListener('change', (e) => {
-  PetState.name = e.target.value.trim() || 'Siri';
-  petNameInput.value = PetState.name;
-  saveState();
-  logEvent(`更名為 ${PetState.name}`);
 });
 
-// 切換觸摸熱區的可視標示 (debug 模式)
-let debugMode = false;
-document.getElementById('toggleDebugBtn').addEventListener('click', () => {
-  debugMode = !debugMode;
-  cockatielSvg.classList.toggle('debug-zones', debugMode);
-  document.getElementById('toggleDebugBtn').innerText = debugMode 
-    ? '隱藏觸摸安全區 / 警告禁區' 
-    : '顯示撫摸安全區 / 警告禁區';
-});
+// 隨機自主進出籠（每 45 秒有 30% 機率切換心意）
+setInterval(() => {
+  if (Math.random() < 0.35) {
+    App.inCage = !App.inCage;
+    if (App.inCage) {
+      speak('自己走進籠子窩著了 💤');
+      addLog(`Siri 覺得有點累，主動回籠子休息（暫不互動）`);
+    } else {
+      speak('從籠子探出頭走出來囉！✨');
+      addLog(`Siri 主動出籠探索客廳`);
+    }
+    updateUI();
+  }
+}, 45000);
 
-// 科普頁籤切換
-document.querySelectorAll('.tab-btn').forEach(btn => {
+// 家具購買
+document.querySelectorAll('.shop-btn').forEach(btn => {
   btn.addEventListener('click', () => {
-    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-    document.querySelectorAll('.tab-content').forEach(c => c.style.display = 'none');
-    btn.classList.add('active');
-    document.getElementById(btn.getAttribute('data-tab')).style.display = 'block';
+    const cost = parseInt(btn.dataset.price);
+    const targetId = btn.dataset.target;
+    if (App.coins >= cost && !App.furniture[targetId]) {
+      App.coins -= cost;
+      App.furniture[targetId] = true;
+      document.getElementById(targetId).classList.add('unlocked');
+      speak('客廳變得更漂亮了！❤️');
+      addLog(`購買了新家具裝飾客廳！`);
+      updateUI();
+    }
   });
 });
 
-// 定時自然衰減迴圈 (每 20 秒執行一次輕微衰減)
+// 名稱修改
+document.getElementById('birdNameInput').addEventListener('change', (e) => {
+  App.name = e.target.value.trim() || 'Siri';
+  addLog(`寵物更名為 ${App.name}`);
+  saveState();
+});
+
+// 自然代謝
 setInterval(() => {
-  let changed = false;
-  // 飢餓衰減
-  if (PetState.hunger > 0) {
-    PetState.hunger -= 1;
-    changed = true;
-  } else {
-    // 飢餓壓抑扣親密度
-    PetState.bond = Math.max(0, PetState.bond - 1);
-    changed = true;
-  }
+  if (App.hunger > 0) App.hunger -= 1;
+  if (App.happiness > 20) App.happiness -= 0.5;
+  updateUI();
+}, 25000);
 
-  // 心情隨時間稍微降低
-  if (PetState.happiness > 20) {
-    PetState.happiness -= 0.5;
-    changed = true;
-  }
-
-  // 關籠太久沒放風扣分
-  if (PetState.inCage && (Date.now() - PetState.lastCageChange > 180000)) {
-    PetState.happiness = Math.max(0, PetState.happiness - 1);
-    PetState.bond = Math.max(0, PetState.bond - 1);
-    if (Math.random() < 0.3) {
-      audio.scream();
-      showBubble('嘎——！想出來！(大叫抗議)');
-    }
-  }
-
-  if (changed) {
-    updateUI();
-  }
-}, 20000);
-
-// 初次載入
 loadState();
 </script>
 </body>
